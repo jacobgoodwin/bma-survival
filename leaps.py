@@ -11,20 +11,41 @@ def leaps(info, coef, names, nbest):
 	# if names.length < info.length
 	# 	print("too few names")
 	# 	exit
-	bIb = np.dot(coef, info, coef)
+	print(coef)
+	print(info)
+	# bIb = pd.dot(coef, info, coef)
+	bIb = coef.dot(info).dot(coef)
+	print("bIB: ")
+	print(bIb)
+	# check ordering
+
 	# number of cols of info
 	# kx = info.shape.N
-	kx = 4
-	maxreg = nbest * kx
+	kx=4
+	# maxreg = nbest * 
+	maxreg = nbest * 4
 	if kx < 3:	
 		print("too few individual variables")
 		exit
 	imeth = 1
 	df = kx + 1
-	Ib = np.dot(info, coef)
-	rr = pd.concat([info, Ib], axis=1)
-	rr.columns = ['a', 'b']
-	rr = rr.append(np.concatenate(['Ib', 'bIb']))
+
+	Ib = info.dot(coef)
+
+	rr = pd.concat([info, Ib], axis=1, ignore_index=1)
+	print(rr)
+	print(Ib)
+	print(bIb)
+	Ib = pd.Series(Ib)
+	Ib = Ib.append(pd.Series(bIb)).transpose()
+	print(rr)
+	print(Ib)
+	rr = pd.concat([rr, Ib], ignore_index=1)
+	print(rr)
+	# rr.columns = ['a', 'b']
+	# rr = rr.concat(concatenate(['Ib', 'bIb']))
+	
+
 	it = 0
 	ncols = kx + 1
 	nv = kx + 1
@@ -73,12 +94,12 @@ def leaps(info, coef, names, nbest):
         # ans <- list(r2 = r2, size = size, label = label, which = which)
  # print(ans)
 
-coef = np.array([0.151, -0.513, -0.012, -0.002])
-info = np.array([[9.676660e-05, 5.395207e-05, 1.522390e-05, 2.459970e-06],
+coef = pd.Series([0.151, -0.513, -0.012, -0.002])
+info = pd.DataFrame([[9.676660e-05, 5.395207e-05, 1.522390e-05, 2.459970e-06],
 				[5.395207e-05, 3.041883e-02, -4.259301e-05, 3.346761e-05],
 				[1.522390e-05, -4.259301e-05,  3.824660e-05, 8.321737e-06],
 				[2.459970e-06, 3.346761e-05, 8.321737e-06, 4.041545e-05]])
-names = ['age', 'sex', 'ph_karno', 'wt_loss']
+names = pd.Series(['age', 'sex', 'ph_karno', 'wt_loss'])
 
 leaps(info, coef, names, 150)
 
